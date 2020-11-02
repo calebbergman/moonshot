@@ -33,6 +33,10 @@ function _draw()
 end
 -->8
 print("hello")
+print("world")
+print("this")
+print("is")
+print("strongbad")
 -->8
 print("tab 2")
 print("just some more")
