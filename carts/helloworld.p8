@@ -7,14 +7,18 @@ face_left=true
 
 function _update()
 	prev_x=x
- if x>0 and x<127 then
- 	if (btn(⬅️)) then x-=1 end
- 	if (btn(➡️)) then x+=1 end
+  if (x > 0 and btn(⬅️)) then
+    x-=1
+  end
+  if (x < (127 - 7) and btn(➡️)) then
+    x+=1
 	end
- if y>0 and y<127 then
-  if (btn(⬆️)) then y-=1 end
- 	if (btn(⬇️)) then y+=1 end	
- end
+  if (y > 0 and btn(⬆️)) then
+    y-=1
+  end
+  if (y < (127) and btn(⬇️)) then
+    y+=1
+  end
 	if (prev_x != x) then
 		face_left = prev_x < x
 	end
@@ -26,9 +30,9 @@ end
 function _draw()
 	cls()
 	if (face_left) then
-		spr(3,x,y,4,4,true)
+		spr(1,x,y,1,1,true)
 	else
-		spr(3,x,y,4,4)
+		spr(1,x,y,1,1)
 	end
 end
 -->8
