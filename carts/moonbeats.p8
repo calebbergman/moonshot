@@ -1,7 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 29
 __lua__
-
+-- moonbeats
+-- by berg bros
 x=0
 y=0
 square = 1
