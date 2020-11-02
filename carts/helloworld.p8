@@ -17,6 +17,28 @@ function _draw()
 		spr(1,x,y,1,1)
 	end
 end
+
+function character()
+  prev_x=x
+  if (x > 0 and btn(⬅️)) then
+    x-=1
+  end
+  if (x < (127 - 7) and btn(➡️)) then
+    x+=1
+	end
+  if (y > 0 and btn(⬆️)) then
+    y-=1
+  end
+  if (y < (127 - 7) and btn(⬇️)) then
+    y+=1
+  end
+	if (prev_x != x) then
+		face_left = prev_x < x
+	end
+	if (btn(❎)) then
+		sfx(1)
+	end
+end
 __gfx__
 0000000000aaaa000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000000000a0077a0000000000000000000022222222c000000000000000000000000000000000000000000000000000000000000000000000000000000000000
