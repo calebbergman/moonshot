@@ -35,6 +35,10 @@ end
 print("hello")
 -->8
 print("tab 2")
+print("just some more")
+function get_wrecked()
+ print("got wrecked")
+end
 -->8
 print("tab 3")
 __gfx__
