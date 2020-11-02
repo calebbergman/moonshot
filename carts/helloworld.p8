@@ -7,10 +7,14 @@ face_left=true
 
 function _update()
 	prev_x=x
-	if (btn(⬅️)) then x-=1 end
-	if (btn(➡️)) then x+=1 end
-	if (btn(⬆️)) then y-=1 end
-	if (btn(⬇️)) then y+=1 end	
+ if x>0 and x<127 then
+ 	if (btn(⬅️)) then x-=1 end
+ 	if (btn(➡️)) then x+=1 end
+	end
+ if y>0 and y<127 then
+  if (btn(⬆️)) then y-=1 end
+ 	if (btn(⬇️)) then y+=1 end	
+ end
 	if (prev_x != x) then
 		face_left = prev_x < x
 	end
