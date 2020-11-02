@@ -1,12 +1,34 @@
 pico-8 cartridge // http://www.pico-8.com
 version 29
 __lua__
-x=64
-y=64
+
+x=0
+y=0
+square = 1
 face_left=true
 
+left,right,up,down,fire1,fire2=0,1,2,3,4,5
+black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+
+color = { red, yellow, green, blue }
+rects = {}
+
+function init()
+  local count = 3
+  local padding = 15
+  local width = 8
+  local start = 127 - (((count + 1) * width) + (padding * (count)))
+  for i=0,count do
+    rects[i + 1] = start + ((width + padding) * i)
+  end
+  x = rects[1]
+  y = 115
+end
+
+init()
+
 function _update()
-	character()
+  character()
 end
 
 function _draw()
@@ -15,28 +37,40 @@ function _draw()
 		spr(1,x,y,1,1,true)
 	else
 		spr(1,x,y,1,1)
-	end
+  end
+  drawRects()
+end
+
+function drawRects()
+  local y0 = 115
+  local width = 8
+  local height = 8
+  for i=0,(#rects - 1) do
+    rect(
+      rects[i + 1],
+      y0,
+      rects[i + 1] + width,
+      y0 + height,
+      color[i + 1]
+    )
+  end
 end
 
 function character()
   prev_x=x
-  if (x > 0 and btn(⬅️)) then
-    x-=1
+  if (x > rects[1] and btnp(⬅️)) then
+    square -= 1
+    x=rects[square]
   end
-  if (x < (127 - 7) and btn(➡️)) then
-    x+=1
+  if (x < (rects[#rects]) and btnp(➡️)) then
+    square += 1
+    x=rects[square]
 	end
-  if (y > 0 and btn(⬆️)) then
-    y-=1
-  end
-  if (y < (127 - 7) and btn(⬇️)) then
-    y+=1
-  end
 	if (prev_x != x) then
 		face_left = prev_x < x
 	end
 	if (btn(❎)) then
-		sfx(1)
+		music(0)
 	end
 end
 __gfx__
