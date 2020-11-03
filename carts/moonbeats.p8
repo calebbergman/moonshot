@@ -11,7 +11,7 @@ face_left=true
 left,right,up,down,fire1,fire2=0,1,2,3,4,5
 black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
-color = { red, yellow, green, blue }
+rect_color = { red, yellow, green, blue }
 rects = {}
 
 function init()
@@ -39,10 +39,10 @@ function _draw()
 	else
 		spr(1,x,y,1,1)
   end
-  drawRects()
+  drawrects()
 end
 
-function drawRects()
+function drawrects()
   local y0 = 115
   local width = 8
   local height = 8
@@ -52,7 +52,7 @@ function drawRects()
       y0,
       rects[i + 1] + width,
       y0 + height,
-      color[i + 1]
+      rect_color[i + 1]
     )
   end
 end
@@ -74,6 +74,14 @@ function character()
 		music(0)
 	end
 end
+-->8
+--tab 1
+
+-->8
+--tab 2
+
+-->8
+--tab 3
 __gfx__
 0000000000aaaa000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000000000a0077a0000000000000000000022222222c000000000000000000000000000000000000000000000000000000000000000000000000000000000000
