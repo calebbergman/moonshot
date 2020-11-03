@@ -10,6 +10,9 @@ black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,oran
 function _init()
  --enable/disable debug info
  debug=true
+ 
+ --define noteboards
+ init_noteboards()
 
  --setup play rectangles
  rect_count = 3
@@ -31,6 +34,7 @@ end
 
 function _update60()
  update_player1()
+
  if debug then update_debug() end
 end
 
@@ -43,7 +47,7 @@ function _draw()
  end
 
  draw_rects()
-
+ update_nb()
  if debug then draw_debug() end
 end
 
@@ -77,14 +81,59 @@ function update_player1()
 	end
 	
  if (btn(❎)) then
-		music(0)
+		music(2)
 	end
 end
 -->8
 --tab 1
 -- noteboard functions
+function init_noteboards()
+ nb_patterns={
+   --pattern 1
+   {},
+   --pattern 2
+   {}
+ }
+ nb_patterns[1][1]={20,"x...y...x...y...x...y...x...y..."}
+ nb_patterns[1][2]={20,"..........x.x.............x.x..."}
+ nb_patterns[1][3]=nil
+ nb_patterns[1][4]=nil
+ nb_patterns[2][1]={20,"xx........y.....xx........y....."}
+ nb_patterns[2][2]={20,"................................"}
+ nb_patterns[2][3]=nil
+ nb_patterns[2][4]=nil
+end
+
 function update_nb()
  -- main update noteboard func
+ if stat(24)!=-1 then
+  local i,j,note_y
+  --update note positions
+  --do maths
+  for i=1,4 do
+   --i represents the sfx/track
+   if nb_patterns[stat(24)][i]!=nil then
+
+    local note_num=stat(i+19)
+    for j=1,32 do
+     --j represents the noteboard string position
+     --each note gets 6 pixels of space
+     --we need to calculate which y position to display relevant notes
+     if (sub(nb_patterns[stat(24)][i][2],j,j)!=".") then
+      if note_num<=j then
+       --only current and future notes are relevant
+       note_y=(120-(j-note_num)*6)+mid(0,(stat(26)%20)/6,5)
+       if i==1 then
+        rectfill(51,note_y,51+6,note_y+1,3)
+       else
+        rectfill(74,note_y,74+6,note_y+1,4)
+       end
+      end
+     end
+    end
+   end
+  end
+ end
 end
 -->8
 --tab 2
@@ -100,7 +149,7 @@ end
 function draw_debug()
  local i
  for i=1,#dbg_statnum do
-  print(dbg_statname[i]..": "..stat(dbg_statnum[i]),0,8*i)
+  print(dbg_statname[i]..": "..stat(dbg_statnum[i]),0,7*i)
  end
 end
 -->8
@@ -137,7 +186,10 @@ __gfx__
 __sfx__
 01140000041430000000000000002465200602186031a603041431860300000000002465200000000000000004143000000000000000246520000000000000000414300000000000000024652000000000000000
 000d0000235502255022750217501f7501d5501b550197501775013550115500f7500e7500b55009750097500b5500d5501075011750135501455016750197501b5501c5501e7501e75020750215502255022750
-01140000000000000000000000000000000000000000000000000000001c155000001c155000000000000000000000000000000000000000000000000000000000000000001c155000001c155000000000000000
+011400000c0001d000280002800028000000000000000000000001c1001c155000001c1551c100000000000000000000000000000000000000000000000000001c100000001c155000001c1551c1000000000000
+011400000414304143000000000000000000000000000000000000000024652000000000024600000000000004143041430000000000000000000000000000000000000000246520000000000246000000000000
 __music__
 00 00024344
+00 00024344
+00 03424344
 
