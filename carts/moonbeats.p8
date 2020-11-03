@@ -3,74 +3,77 @@ version 29
 __lua__
 -- moonbeats
 -- by berg bros
-x=0
-y=0
-square = 1
-face_left=true
+
 
 left,right,up,down,fire1,fire2=0,1,2,3,4,5
 black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
-rect_color = { red, yellow, green, blue }
-rects = {}
 
 function init()
-  local count = 3
-  local padding = 15
-  local width = 8
-  local start = 127 - (((count + 1) * width) + (padding * (count)))
-  for i=0,count do
-    rects[i + 1] = start + ((width + padding) * i)
+  --setup play rectangles
+  rect_count = 3
+  rect_padding = 15
+  rect_width = 8
+  rect_start = 127 - (((rect_count + 1) * rect_width) + (rect_padding * (rect_count)))
+  rect_color = { red, yellow, green, blue }
+  rects = {}
+  for i=0,rect_count do
+   rects[i + 1] = rect_start + ((rect_width + rect_padding) * i)
   end
-  x = rects[1]
-  y = 115
+
+  --init player locations
+  p1_x = rects[1]
+  p1_y = 115
+  p1_square = 1
+  p1_face_left=true
 end
 
 init()
 
-function _update()
-  character()
+function _update60()
+  udpate_player1()
 end
 
 function _draw()
 	cls()
-	if (face_left) then
-		spr(1,x,y,1,1,true)
+	if (p1_face_left) then
+		spr(1,p1_x,p1_y,1,1,true)
 	else
-		spr(1,x,y,1,1)
+		spr(1,p1_x,p1_y,1,1)
   end
-  drawrects()
+  draw_rects()
 end
 
-function drawrects()
+function draw_rects()
   local y0 = 115
   local width = 8
   local height = 8
   for i=0,(#rects - 1) do
-    rect(
-      rects[i + 1],
-      y0,
-      rects[i + 1] + width,
-      y0 + height,
-      rect_color[i + 1]
-    )
+  rect(
+   rects[i + 1],
+   y0,
+   rects[i + 1] + width,
+   y0 + height,
+   rect_color[i + 1]
+  )
   end
 end
 
-function character()
-  prev_x=x
-  if (x > rects[1] and btnp(⬅️)) then
-    square -= 1
-    x=rects[square]
-  end
-  if (x < (rects[#rects]) and btnp(➡️)) then
-    square += 1
-    x=rects[square]
+function udpate_player1()
+ prev_x=p1_x
+ if (p1_x > rects[1] and btnp(⬅️)) then
+  p1_square -= 1
+  p1_x=rects[p1_square]
+ elseif (p1_x < (rects[#rects]) and btnp(➡️)) then
+   p1_square += 1
+   p1_x=rects[p1_square]
 	end
-	if (prev_x != x) then
-		face_left = prev_x < x
+	
+ if (prev_x != p1_x) then
+		p1_face_left = prev_x < p1_x
 	end
-	if (btn(❎)) then
+	
+ if (btn(❎)) then
 		music(0)
 	end
 end
