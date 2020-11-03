@@ -4,38 +4,34 @@ __lua__
 -- moonbeats
 -- by berg bros
 
-
 left,right,up,down,fire1,fire2=0,1,2,3,4,5
 black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
+function _init()
+ --enable/disable debug info
+ debug=true
 
-function init()
-  --enable/disable debug info
-  debug=true
+ --setup play rectangles
+ rect_count = 3
+ rect_padding = 15
+ rect_width = 8
+ rect_start = 127 - (((rect_count + 1) * rect_width) + (rect_padding * (rect_count)))
+ rect_color = { red, yellow, green, blue }
+ rects = {}
+ for i=0,rect_count do
+  rects[i + 1] = rect_start + ((rect_width + rect_padding) * i)
+ end
 
-  --setup play rectangles
-  rect_count = 3
-  rect_padding = 15
-  rect_width = 8
-  rect_start = 127 - (((rect_count + 1) * rect_width) + (rect_padding * (rect_count)))
-  rect_color = { red, yellow, green, blue }
-  rects = {}
-  for i=0,rect_count do
-   rects[i + 1] = rect_start + ((rect_width + rect_padding) * i)
-  end
-
-  --init player locations
-  p1_x = rects[1]
-  p1_y = 115
-  p1_square = 1
-  p1_face_left=true
+ --init player locations
+ p1_x = rects[1]
+ p1_y = 115
+ p1_square = 1
+ p1_face_left=true
 end
 
-init()
-
 function _update60()
-  udpate_player1()
-  if debug then update_debug() end
+ update_player1()
+ if debug then update_debug() end
 end
 
 function _draw()
@@ -52,29 +48,28 @@ function _draw()
 end
 
 function draw_rects()
-
-  local y0 = 115
-  local width = 8
-  local height = 8
-  for i=0,(#rects - 1) do
-  rect(
-   rects[i + 1],
-   y0,
-   rects[i + 1] + width,
-   y0 + height,
-   rect_color[i + 1]
-  )
-  end
+ local y0 = 115
+ local width = 8
+ local height = 8
+ for i=0,(#rects - 1) do
+ rect(
+  rects[i + 1],
+  y0,
+  rects[i + 1] + width,
+  y0 + height,
+  rect_color[i + 1]
+ )
+ end
 end
 
-function udpate_player1()
+function update_player1()
  prev_x=p1_x
  if (p1_x > rects[1] and btnp(⬅️)) then
   p1_square -= 1
   p1_x=rects[p1_square]
  elseif (p1_x < (rects[#rects]) and btnp(➡️)) then
-   p1_square += 1
-   p1_x=rects[p1_square]
+  p1_square += 1
+  p1_x=rects[p1_square]
 	end
 	
  if (prev_x != p1_x) then
@@ -86,7 +81,7 @@ function udpate_player1()
 	end
 end
 -->8
---tab 1x
+--tab 1
 -- noteboard functions
 function update_nb()
  -- main update noteboard func
