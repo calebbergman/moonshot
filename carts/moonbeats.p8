@@ -10,6 +10,9 @@ black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,oran
 
 
 function init()
+  --enable/disable debug info
+  debug=true
+
   --setup play rectangles
   rect_count = 3
   rect_padding = 15
@@ -32,6 +35,7 @@ init()
 
 function _update60()
   udpate_player1()
+  if debug then update_debug() end
 end
 
 function _draw()
@@ -40,11 +44,15 @@ function _draw()
 		spr(1,p1_x,p1_y,1,1,true)
 	else
 		spr(1,p1_x,p1_y,1,1)
-  end
-  draw_rects()
+ end
+
+ draw_rects()
+
+ if debug then draw_debug() end
 end
 
 function draw_rects()
+
   local y0 = 115
   local width = 8
   local height = 8
@@ -78,11 +86,28 @@ function udpate_player1()
 	end
 end
 -->8
---tab 1
-
+--tab 1x
+-- noteboard functions
+function update_nb()
+ -- main update noteboard func
+end
 -->8
 --tab 2
+--debug functions
+function update_debug()
+ dbg_statname={"frmrate",
+  "sfx1","sfx2","sfx3","sfx4",
+  "note1","note2","note3","note4",
+  "pattern","pticks"}
+ dbg_statnum={7,16,17,18,19,20,21,22,23,24,26}
+end
 
+function draw_debug()
+ local i
+ for i=1,#dbg_statnum do
+  print(dbg_statname[i]..": "..stat(dbg_statnum[i]),0,8*i)
+ end
+end
 -->8
 --tab 3
 __gfx__
@@ -119,5 +144,5 @@ __sfx__
 000d0000235502255022750217501f7501d5501b550197501775013550115500f7500e7500b55009750097500b5500d5501075011750135501455016750197501b5501c5501e7501e75020750215502255022750
 01140000000000000000000000000000000000000000000000000000001c155000001c155000000000000000000000000000000000000000000000000000000000000000001c155000001c155000000000000000
 __music__
-00 00020304
+00 00024344
 
