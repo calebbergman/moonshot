@@ -1,4 +1,8 @@
+.vscode
 activity_log.txt
 config.txt
 log.txt
 sdl_controllers.txt
+/carts
+!/carts/moonbeats.p8
+
