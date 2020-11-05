@@ -8,13 +8,7 @@ left,right,up,down,fire1,fire2=0,1,2,3,4,5
 black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
 function _init()
- --enable/disable debug info
- debug=true
- 
- --define noteboards
- init_noteboards()
-
- --setup play rectangles
+ --setup play lanes
  lane.count = 3
  lane.padding = 15
  lane.width = 8
@@ -37,25 +31,11 @@ end
 function _draw()
 	cls()
 	p1.draw()
- draw_lanes()
- update_nb()
- if debug then draw_debug() end
+ lane.draw()
+ nb.draw()
+ if debug.enabled then debug.draw() end
 end
 
-function draw_lanes()
- local y0 = 115
- local width = 8
- local height = 8
- for i=0,(#lane.position - 1) do
- rect(
-  lane.position[i + 1],
-  y0,
-  lane.position[i + 1] + width,
-  y0 + height,
-  lane.color[i + 1]
- )
- end
-end
 -->8
 -- player
 p1 = {
@@ -100,49 +80,62 @@ lane = {
  width=8,
  start=0,
  position={},
+ draw=function()
+  local y0 = 115
+  local width = 8
+  local height = 8
+  for i=0,(#lane.position - 1) do
+  rect(
+   lane.position[i + 1],
+   y0,
+   lane.position[i + 1] + width,
+   y0 + height,
+   lane.color[i + 1]
+  )
+  end
+ end,
 }
 -->8
 -- noteboard functions
-function init_noteboards()
- nb_patterns={
-   --pattern 1
-   {},
-   --pattern 2
-   {}
- }
- nb_patterns[1][1]={20,"x...y...x...y...x...y...x...y..."}
- nb_patterns[1][2]={20,"..........x.x.............x.x..."}
- nb_patterns[1][3]=nil
- nb_patterns[1][4]=nil
- nb_patterns[2][1]={20,"xx........y.....xx........y....."}
- nb_patterns[2][2]={20,"................................"}
- nb_patterns[2][3]=nil
- nb_patterns[2][4]=nil
-end
+nb = {
+ pattern = {
+  { -- 1
+   {20,"x...y...x...y...x...y...x...y..."},
+   {20,"..........x.x.............x.x..."},
+   nil,
+   nil,
+  },
+  { -- 2
+   {20,"xx........y.....xx........y....."},
+   {20,"................................"},
+   nil,
+   nil,
+  },
+ },
+ draw=function()
+  -- main update noteboard func
+  if stat(24)!=-1 then
+   local i,j,note_y
+   --update note positions
+   --do maths
+   for i=1,4 do
+    --i represents the sfx/track
+    if nb.pattern[stat(24)][i]!=nil then
 
-function update_nb()
- -- main update noteboard func
- if stat(24)!=-1 then
-  local i,j,note_y
-  --update note positions
-  --do maths
-  for i=1,4 do
-   --i represents the sfx/track
-   if nb_patterns[stat(24)][i]!=nil then
-
-    local note_num=stat(i+19)
-    for j=1,32 do
-     --j represents the noteboard string position
-     --each note gets 6 pixels of space
-     --we need to calculate which y position to display relevant notes
-     if (sub(nb_patterns[stat(24)][i][2],j,j)!=".") then
-      if note_num<=j then
-       --only current and future notes are relevant
-       note_y=(120-(j-note_num)*6)+mid(0,(stat(26)%20)/6,5)
-       if i==1 then
-        rectfill(51,note_y,51+6,note_y+1,3)
-       else
-        rectfill(74,note_y,74+6,note_y+1,4)
+     local note_num=stat(i+19)
+     for j=1,32 do
+      --j represents the noteboard string position
+      --each note gets 6 pixels of space
+      --we need to calculate which y position to display relevant notes
+      if (sub(nb.pattern[stat(24)][i][2],j,j)!=".") then
+       if note_num<=j then
+        --only current and future notes are relevant
+        note_y=(120-(j-note_num)*6)+mid(0,(stat(26)%20)/6,5)
+        if i==1 then
+         rectfill(51,note_y,51+6,note_y+1,3)
+        else
+         rectfill(74,note_y,74+6,note_y+1,4)
+        end
        end
       end
      end
@@ -150,28 +143,32 @@ function update_nb()
    end
   end
  end
-end
--->8
---debug functions
-stats = {
- { "frmrate", 7 },
- { "sfx1", 16 },
- { "sfx2", 17 },
- { "sfx3", 18 },
- { "sfx4", 19 },
- { "note1", 20 },
- { "note2", 21 },
- { "note3", 22 },
- { "note4", 23 },
- { "pattern", 24 },
- { "pticks", 26 },
 }
 
-function draw_debug()
- for i=1,#stats do
-  print(stats[i][1]..": "..stat(stats[i][2]),0,7*i)
- end
-end
+-->8
+--debug functions
+debug={
+ enabled=true,
+ stats = {
+  { "frmrate", 7 },
+  { "sfx1", 16 },
+  { "sfx2", 17 },
+  { "sfx3", 18 },
+  { "sfx4", 19 },
+  { "note1", 20 },
+  { "note2", 21 },
+  { "note3", 22 },
+  { "note4", 23 },
+  { "pattern", 24 },
+  { "pticks", 26 },
+ },
+ draw=function()
+  for i=1,#debug.stats do
+   print(debug.stats[i][1]..": "..stat(debug.stats[i][2]),0,7*i)
+  end
+ end,
+}
+
 __gfx__
 0000000000aaaa000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000000000a0077a0000000000000000000022222222c000000000000000000000000000000000000000000000000000000000000000000000000000000000000
