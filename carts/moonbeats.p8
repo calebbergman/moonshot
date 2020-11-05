@@ -7,49 +7,6 @@ __lua__
 left,right,up,down,fire1,fire2=0,1,2,3,4,5
 black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
-p1 = {
- x=0,
- prev_x=0,
- y=0,
- lane=0,
- facing="left",
- update=function()
-  p1.prev_x=p1.x
-  if (p1.x > lane.position[1] and btnp(⬅️)) then
-   p1.lane -= 1
-   p1.x=lane.position[p1.lane]
-  elseif (p1.x < (lane.position[#lane.position]) and btnp(➡️)) then
-   p1.lane += 1
-   p1.x=lane.position[p1.lane]
-  end
-  
-  if (p1.prev_x != p1.x) then
-   p1.facing = p1.prev_x < p1.x and "left" or "right"
-  end
-  
-  if (btn(❎)) then
-   music(2)
-  end
- end,
- draw=function()
-  if (p1.facing == "left") then
-   spr(1,p1.x,p1.y,1,1,true)
-  else
-   spr(1,p1.x,p1.y,1,1)
-  end
- end,
-}
-
-lane = {
- y=115,
- color={ red, yellow, green, blue },
- count=3,
- padding=15,
- width=8,
- start=0,
- position={},
-}
-
 function _init()
  --enable/disable debug info
  debug=true
@@ -100,7 +57,51 @@ function draw_lanes()
  end
 end
 -->8
---tab 1
+-- player
+p1 = {
+ x=0,
+ prev_x=0,
+ y=0,
+ lane=0,
+ facing="left",
+ update=function()
+  p1.prev_x=p1.x
+  if (p1.x > lane.position[1] and btnp(⬅️)) then
+   p1.lane -= 1
+   p1.x=lane.position[p1.lane]
+  elseif (p1.x < (lane.position[#lane.position]) and btnp(➡️)) then
+   p1.lane += 1
+   p1.x=lane.position[p1.lane]
+  end
+  
+  if (p1.prev_x != p1.x) then
+   p1.facing = p1.prev_x < p1.x and "left" or "right"
+  end
+  
+  if (btn(❎)) then
+   music(2)
+  end
+ end,
+ draw=function()
+  if (p1.facing == "left") then
+   spr(1,p1.x,p1.y,1,1,true)
+  else
+   spr(1,p1.x,p1.y,1,1)
+  end
+ end,
+}
+-->8
+-- lanes
+lane = {
+ y=115,
+ color={ red, yellow, green, blue },
+ count=3,
+ padding=15,
+ width=8,
+ start=0,
+ position={},
+}
+-->8
 -- noteboard functions
 function init_noteboards()
  nb_patterns={
@@ -151,7 +152,6 @@ function update_nb()
  end
 end
 -->8
---tab 2
 --debug functions
 stats = {
  { "frmrate", 7 },
@@ -172,8 +172,6 @@ function draw_debug()
   print(stats[i][1]..": "..stat(stats[i][2]),0,7*i)
  end
 end
--->8
---tab 3
 __gfx__
 0000000000aaaa000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000000000a0077a0000000000000000000022222222c000000000000000000000000000000000000000000000000000000000000000000000000000000000000
