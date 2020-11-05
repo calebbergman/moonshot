@@ -39,31 +39,68 @@ end
 -->8
 -- player
 p1 = {
- x=0,
  prev_x=0,
+ x=0,
+ dx=1,
  y=0,
  lane=0,
- facing="left",
+ -- facing="left",
+ dest=0,
+ moving_started=0,
+ moving_time=150,
+ is_moving=false,
+ start_move=function()
+  p1.is_moving = true
+  p1.moving_started = now()
+  p1.prev_x = p1.x
+ end,
+ move_left=function()
+  p1.start_move()
+  p1.lane = (p1.lane == 1) and 1 or (p1.lane - 1)
+	 p1.dest = lane.position[p1.lane]
+  p1.distance = abs(p1.x - p1.dest)
+	 p1.dx = -1
+ end,
+ move_right=function()
+  p1.start_move()
+  p1.lane = (p1.lane >= #lane.position) and #lane.position or (p1.lane + 1)
+  p1.dest = lane.position[p1.lane]
+  p1.distance = abs(p1.x - p1.dest)
+	 p1.dx = 1
+ end,
+ move=function()
+  local elapsed = now() - p1.moving_started
+  if (elapsed >= p1.moving_time) then
+	 	p1.stop_move()
+  else
+   local perc = (elapsed) / p1.moving_time
+   p1.x = p1.prev_x + (p1.dx * p1.distance * ease_out_quad(perc))
+  end
+ end,
+ stop_move=function()
+  p1.x = lane.position[p1.lane]
+ 	p1.is_moving = false
+ 	p1.moving_started = 0
+ end,
  update=function()
-  p1.prev_x=p1.x
   if (p1.x > lane.position[1] and btnp(⬅️)) then
-   p1.lane -= 1
-   p1.x=lane.position[p1.lane]
+   p1.move_left()
   elseif (p1.x < (lane.position[#lane.position]) and btnp(➡️)) then
-   p1.lane += 1
-   p1.x=lane.position[p1.lane]
+   p1.move_right()
   end
-  
-  if (p1.prev_x != p1.x) then
-   p1.facing = p1.prev_x < p1.x and "left" or "right"
+  if p1.is_moving then
+   p1.move()
   end
+  -- if (p1.prev_x != p1.x) then
+  --  p1.facing = p1.prev_x < p1.x and "left" or "right"
+  -- end
   
   if (btn(❎)) then
    music(2)
   end
  end,
  draw=function()
-  if (p1.facing == "left") then
+  if (p1.dx == 1) then
    spr(1,p1.x,p1.y,1,1,true)
   else
    spr(1,p1.x,p1.y,1,1)
@@ -144,6 +181,24 @@ nb = {
   end
  end
 }
+
+-->8
+--utils
+function now()
+	return flr(t() * 1000)
+end
+
+function ease_out_quad(x)
+	return 1 - pow(1 - x, 2)
+end
+
+function pow(value, times)
+ local result = 1
+	for i=1,times do
+		result *= value
+	end
+	return result
+end
 
 -->8
 --debug functions
