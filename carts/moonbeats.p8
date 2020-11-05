@@ -7,6 +7,49 @@ __lua__
 left,right,up,down,fire1,fire2=0,1,2,3,4,5
 black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
+p1 = {
+ x=0,
+ prev_x=0,
+ y=0,
+ lane=0,
+ facing="left",
+ update=function()
+  p1.prev_x=p1.x
+  if (p1.x > lane.position[1] and btnp(⬅️)) then
+   p1.lane -= 1
+   p1.x=lane.position[p1.lane]
+  elseif (p1.x < (lane.position[#lane.position]) and btnp(➡️)) then
+   p1.lane += 1
+   p1.x=lane.position[p1.lane]
+  end
+  
+  if (p1.prev_x != p1.x) then
+   p1.facing = p1.prev_x < p1.x and "left" or "right"
+  end
+  
+  if (btn(❎)) then
+   music(2)
+  end
+ end,
+ draw=function()
+  if (p1.facing == "left") then
+   spr(1,p1.x,p1.y,1,1,true)
+  else
+   spr(1,p1.x,p1.y,1,1)
+  end
+ end,
+}
+
+lane = {
+ y=115,
+ color={ red, yellow, green, blue },
+ count=3,
+ padding=15,
+ width=8,
+ start=0,
+ position={},
+}
+
 function _init()
  --enable/disable debug info
  debug=true
@@ -15,74 +58,48 @@ function _init()
  init_noteboards()
 
  --setup play rectangles
- rect_count = 3
- rect_padding = 15
- rect_width = 8
- rect_start = 127 - (((rect_count + 1) * rect_width) + (rect_padding * (rect_count)))
- rect_color = { red, yellow, green, blue }
- rects = {}
- for i=0,rect_count do
-  rects[i + 1] = rect_start + ((rect_width + rect_padding) * i)
+ lane.count = 3
+ lane.padding = 15
+ lane.width = 8
+ lane.start = 127 - (((lane.count + 1) * lane.width) + (lane.padding * (lane.count)))
+ lane.color = { red, yellow, green, blue }
+ for i=0,lane.count do
+  lane.position[i + 1] = lane.start + ((lane.width + lane.padding) * i)
  end
 
- --init player locations
- p1_x = rects[1]
- p1_y = 115
- p1_square = 1
- p1_face_left=true
+ --init player location
+ p1.lane = 1
+ p1.x = lane.position[p1.lane]
+ p1.y = lane.y
 end
 
 function _update60()
- update_player1()
+ p1.update()
 
  if debug then update_debug() end
 end
 
 function _draw()
 	cls()
-	if (p1_face_left) then
-		spr(1,p1_x,p1_y,1,1,true)
-	else
-		spr(1,p1_x,p1_y,1,1)
- end
-
- draw_rects()
+	p1.draw()
+ draw_lanes()
  update_nb()
  if debug then draw_debug() end
 end
 
-function draw_rects()
+function draw_lanes()
  local y0 = 115
  local width = 8
  local height = 8
- for i=0,(#rects - 1) do
+ for i=0,(#lane.position - 1) do
  rect(
-  rects[i + 1],
+  lane.position[i + 1],
   y0,
-  rects[i + 1] + width,
+  lane.position[i + 1] + width,
   y0 + height,
-  rect_color[i + 1]
+  lane.color[i + 1]
  )
  end
-end
-
-function update_player1()
- prev_x=p1_x
- if (p1_x > rects[1] and btnp(⬅️)) then
-  p1_square -= 1
-  p1_x=rects[p1_square]
- elseif (p1_x < (rects[#rects]) and btnp(➡️)) then
-  p1_square += 1
-  p1_x=rects[p1_square]
-	end
-	
- if (prev_x != p1_x) then
-		p1_face_left = prev_x < p1_x
-	end
-	
- if (btn(❎)) then
-		music(2)
-	end
 end
 -->8
 --tab 1
