@@ -75,8 +75,6 @@ end
 
 function _update60()
  p1.update()
-
- if debug then update_debug() end
 end
 
 function _draw()
@@ -155,18 +153,23 @@ end
 -->8
 --tab 2
 --debug functions
-function update_debug()
- dbg_statname={"frmrate",
-  "sfx1","sfx2","sfx3","sfx4",
-  "note1","note2","note3","note4",
-  "pattern","pticks"}
- dbg_statnum={7,16,17,18,19,20,21,22,23,24,26}
-end
+stats = {
+ { "frmrate", 7 },
+ { "sfx1", 16 },
+ { "sfx2", 17 },
+ { "sfx3", 18 },
+ { "sfx4", 19 },
+ { "note1", 20 },
+ { "note2", 21 },
+ { "note3", 22 },
+ { "note4", 23 },
+ { "pattern", 24 },
+ { "pticks", 26 },
+}
 
 function draw_debug()
- local i
- for i=1,#dbg_statnum do
-  print(dbg_statname[i]..": "..stat(dbg_statnum[i]),0,7*i)
+ for i=1,#stats do
+  print(stats[i][1]..": "..stat(stats[i][2]),0,7*i)
  end
 end
 -->8
