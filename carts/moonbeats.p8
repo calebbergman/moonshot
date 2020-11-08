@@ -197,7 +197,7 @@ nb = {
     if note_is_relevant then
      if nb.pattern[i][j] > 0 then
        note_y=(120 - (j - note_num) * 6) + mid(0, (stat(26) % 20) / 6, 5)
-       rectfill(lane.x[i], note_y, lane.x[i] + lane.width, note_y + 1, 3)
+       rectfill(lane.x[i], note_y, lane.x[i] + lane.width, note_y + 1, lane.color[i])
       end
      end
    end
@@ -243,7 +243,7 @@ debug={
  },
  draw=function()
   for i=1,#debug.stats do
-   print(debug.stats[i][1]..": "..stat(debug.stats[i][2]),0,7*i)
+   print(debug.stats[i][1]..": "..stat(debug.stats[i][2]),0,7*i,12)
   end
  end,
 }
