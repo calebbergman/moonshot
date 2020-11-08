@@ -17,7 +17,7 @@ function _update60()
 end
 
 function _draw()
-	cls()
+ cls()
  lane.draw()
 	p1.draw()
  nb.draw()
@@ -85,7 +85,7 @@ p1 = {
   end
   
   if (btn(❎)) then
-   music(2)
+   nb.play(0)
   end
  end,
  draw=function()
@@ -130,52 +130,79 @@ lane = {
  end
 }
 -->8
+-- tunes
+tunes = {
+ get_sfx=function(index) -- returns #32{}
+  local offset = index * 68
+  local effect = {}
+  local has_volume
+  for i=0,31 do
+   has_volume = tunes.sfx_has_volume( @(0x3201 + offset + (i * 2)) )
+   add(effect, (has_volume and 1) or 0)
+  end
+  return effect
+ end,
+ -- build bits table from decimal value located in the volume/effect bytes' position
+ sfx_has_volume=function(number)
+  local decimal = number
+  local bits = { 0, 0, 0, 0, 0, 0, 0, 0 }
+  local i = 8
+  while (i > 0) do
+   if (decimal <= 0) then
+    bits[i] = 0
+   else
+    bits[i] = decimal % 2
+    decimal = flr(decimal / 2)
+   end
+   i-=1
+  end
+  -- bits = { c, e, e, e, v, v, v, w } where v=volume
+  return bits[5] + bits[6] + bits[7] > 0
+ end,
+ draw_sfx=function(number, x, y)
+  local note = (number > 0)
+  print(note and "X" or "-", (x != nil) and x or 0, (y != nil) and y or 0, note and 11 or 8)
+ end,
+ get_channels_for_song=function(index) -- returns #4{}
+  local offset = index * 4
+  local channel = {}
+  for i=0,3 do
+   add(channel, @(0x3100 + offset + i))
+  end
+  return channel
+ end,
+}
+-->8
 -- noteboard functions
 nb = {
- pattern = {
-  { -- 1
-   {20,"x...y...x...y...x...y...x...y..."},
-   {20,"..........x.x.............x.x..."},
-   nil,
-   nil,
-  },
-  { -- 2
-   {20,"xx........y.....xx........y....."},
-   {20,"................................"},
-   nil,
-   nil,
-  },
- },
+ pattern={}, -- { {1,2,3,4...32}, {5,6,7,8...32}, {9,a,b,c...32}, {d,e,f,0...32} }
+ play=function(song_num)
+  local path = "debug.txt"
+  nb.pattern = {} -- clear
+  local patterns = tunes.get_channels_for_song(song_num) -- { 1, 2, 3, 4 } sfx ids
+  for i=1,#patterns do
+   add(nb.pattern, tunes.get_sfx(patterns[i]))
+  end
+  
+  music(song_num)
+ end,
  draw=function()
-  -- main update noteboard func
-  if stat(24)!=-1 then
-   local i,j,note_y
-   --update note positions
-   --do maths
-   for i=1,4 do
-    --i represents the sfx/track
-    if nb.pattern[stat(24)][i]!=nil then
+  local playing_pattern = stat(24) -- music id
+  if playing_pattern == -1 then return end
 
-     local note_num=stat(i+19)
-     for j=1,32 do
-      --j represents the noteboard string position
-      --each note gets 6 pixels of space
-      --we need to calculate which y position to display relevant notes
-      if (sub(nb.pattern[stat(24)][i][2],j,j)!=".") then
-       if note_num<=j then
-        --only current and future notes are relevant
-        note_y=(120-(j-note_num)*6)+mid(0,(stat(26)%20)/6,5)
-        if i==1 then
-         rectfill(51,note_y,51+6,note_y+1,3)
-        else
-         rectfill(74,note_y,74+6,note_y+1,4)
-        end
-       end
+  for i=1,#nb.pattern do
+   local note_num=stat(i+19)
+   for j=1,32 do
+    local note_is_relevant = note_num <= j
+    if note_is_relevant then
+     if nb.pattern[i][j] > 0 then
+       note_y=(120 - (j - note_num) * 6) + mid(0, (stat(26) % 20) / 6, 5)
+       rectfill(lane.x[i], note_y, lane.x[i] + lane.width, note_y + 1, 3)
       end
      end
-    end
    end
   end
+  
  end
 }
 
@@ -251,12 +278,12 @@ __gfx__
 00000000000000000000000000000000000292000292000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000222000222000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __sfx__
-01140000041430000000000000002465200602186031a603041431860300000000002465200000000000000004143000000000000000246520000000000000000414300000000000000024652000000000000000
+01140000040710000000000000002465200600186001a600041431860000000000002465200000000000000004143000000000000000246520000000000000000414300000000000000024652000000000000000
 000d0000235502255022750217501f7501d5501b550197501775013550115500f7500e7500b55009750097500b5500d5501075011750135501455016750197501b5501c5501e7501e75020750215502255022750
-011400000c0001d000280002800028000000000000000000000001c1001c155000001c1551c100000000000000000000000000000000000000000000000000001c100000001c155000001c1551c1000000000000
-011400000414304143000000000000000000000000000000000000000024652000000000024600000000000004143041430000000000000000000000000000000000000000246520000000000246000000000000
+011400001e0001c0201e00010000270002700011050270001e0001b0500e00018000110001a0500e0001c00010050110000e00010000110001b0001e0000c0500e05010000110001b0001e050000000000000000
+011400000414304143000000000000000000000000000000000000000024652000000000000000000000000004143041430000000000000000000000000000000000000000246520000000000000000000000000
 __music__
-00 00024344
-00 00024344
-00 03424344
+00 00424344
+00 40424344
+00 40424344
 
