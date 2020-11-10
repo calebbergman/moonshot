@@ -1,17 +1,17 @@
 debug={
  enabled=true,
  stats = {
-  { "frmrate", 7 },
-  { "sfx1", 16 },
-  { "sfx2", 17 },
-  { "sfx3", 18 },
-  { "sfx4", 19 },
-  { "note1", 20 },
-  { "note2", 21 },
-  { "note3", 22 },
-  { "note4", 23 },
-  { "pattern", 24 },
-  { "pticks", 26 },
+  { "frmrate", stats.frmrate },
+  { "sfx1", stats.sfx1 },
+  { "sfx2", stats.sfx2 },
+  { "sfx3", stats.sfx3 },
+  { "sfx4", stats.sfx4 },
+  { "note1", stats.note1 },
+  { "note2", stats.note2 },
+  { "note3", stats.note3 },
+  { "note4", stats.note4 },
+  { "pattern", stats.pattern },
+  { "pticks", stats.pticks },
  },
  draw=function()
   for i=1,#debug.stats do

@@ -32,3 +32,17 @@ function bits_from_bytes(number)
  end
  return bits
 end
+
+stats = {
+ frmrate=7,
+ sfx1=16,
+ sfx2=17,
+ sfx3=18,
+ sfx4=19,
+ note1=20,
+ note2=21,
+ note3=22,
+ note4=23,
+ pattern=24,
+ pticks=26,
+}

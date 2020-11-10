@@ -31,10 +31,6 @@ tunes = {
   -- bits = { c, e, e, e, v, v, v, w } where v=volume
   return bits[5] + bits[6] + bits[7] > 0
  end,
- draw_sfx=function(number, x, y)
-  local note = (number > 0)
-  print(note and "X" or "-", (x != nil) and x or 0, (y != nil) and y or 0, note and 11 or 8)
- end,
  get_channels_for_song=function(index) -- returns #4{}
   local offset = index * 4
   local channel = {}
