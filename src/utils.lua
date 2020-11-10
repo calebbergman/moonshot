@@ -16,3 +16,19 @@ function pow(value, times)
 	end
 	return result
 end
+
+function bits_from_bytes(number)
+ local decimal = number
+ local bits = { 0, 0, 0, 0, 0, 0, 0, 0 }
+ local i = 8
+ while (i > 0) do
+  if (decimal <= 0) then
+   bits[i] = 0
+  else
+   bits[i] = decimal % 2
+   decimal = flr(decimal / 2)
+  end
+  i-=1
+ end
+ return bits
+end

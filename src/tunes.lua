@@ -11,18 +11,7 @@ tunes = {
  end,
  -- build bits table from decimal value located in the volume/effect bytes' position
  sfx_has_volume=function(number)
-  local decimal = number
-  local bits = { 0, 0, 0, 0, 0, 0, 0, 0 }
-  local i = 8
-  while (i > 0) do
-   if (decimal <= 0) then
-    bits[i] = 0
-   else
-    bits[i] = decimal % 2
-    decimal = flr(decimal / 2)
-   end
-   i-=1
-  end
+  local bits = bits_from_bytes(number)
   -- bits = { c, e, e, e, v, v, v, w } where v=volume
   return bits[5] + bits[6] + bits[7] > 0
  end,
