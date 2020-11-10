@@ -9,6 +9,22 @@ tunes = {
   end
   return effect
  end,
+ get_sfx_speed=function(index) -- returns integer
+  local offset = ((index + 1) * 68) - 3
+  return @(0x3200 + offset)
+ end,
+ set_sfx_speed=function(index, speed) -- returns integer
+  local offset = ((index + 1) * 68) - 3
+  return poke(0x3200 + offset, speed)
+ end,
+ set_music_speed=function(index, speed) -- returns integer
+  local channels = tunes.get_channels_for_song(index)
+  for i=0,#channels do
+   if (channels[i] != nil) then
+    tunes.set_sfx_speed(channels[i], speed)
+   end
+  end
+ end,
  -- build bits table from decimal value located in the volume/effect bytes' position
  sfx_has_volume=function(number)
   local bits = bits_from_bytes(number)
