@@ -16,7 +16,8 @@ nb = {
   end
 
   nb.speed = tunes.get_sfx_speed(patterns[1])
-  nb.bpm = (1 / 128) * 32 * nb.speed
+  nb.bpm = (nb.spread) / ((60 * (1/128) * nb.speed)) -- Hmmm... 🤔
+  printh("BPM: " .. nb.bpm, "debug.txt")
   nb.is_playing = true
  end,
  stop=function()
@@ -31,7 +32,11 @@ nb = {
   for i=1,#nb.pattern do
    for j=1,32 do
     note = nb.pattern[i][j]
-    note.y += 0.6
+    if (i == 1 and j == 1) then
+      printh("TICK: " .. time() .. ", Y: " .. note.y, "debug.txt")
+    end
+    -- note.y += 0.6
+    note.y += nb.bpm
     if (not nb.start_music and note.y >= lane.mid) then
      start_the_music = true
     end
