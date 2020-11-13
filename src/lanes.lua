@@ -1,6 +1,7 @@
 lane = {
  width=8,
  height=8,
+ mid=0,
  x={},
  y=0,
  color={ red, yellow, green, blue },
@@ -20,6 +21,7 @@ lane = {
  end,
  init=function()
   lane.y = 121 - lane.height
+  lane.mid = lane.y + (lane.height / 2)
   lane.start = 127 - (((lane.count + 1) * lane.width) + (lane.padding * (lane.count)))
   for i=0,lane.count do
    lane.x[i + 1] = lane.start + ((lane.width + lane.padding) * i)

@@ -17,6 +17,14 @@ function pow(value, times)
 	return result
 end
 
+function sum(table)
+ local result = 0
+ for num in all(table) do
+  result += num
+ end
+ return result
+end
+
 function bits_from_bytes(number)
  local decimal = number
  local bits = { 0, 0, 0, 0, 0, 0, 0, 0 }

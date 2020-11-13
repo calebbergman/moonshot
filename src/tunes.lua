@@ -5,7 +5,10 @@ tunes = {
   local has_volume
   for i=0,31 do
    has_volume = tunes.sfx_has_volume( @(0x3201 + offset + (i * 2)) )
-   add(effect, (has_volume and 1) or 0)
+   add(effect, {
+    show=(has_volume and 1) or 0,
+    y = (-nb.spread * i) - nb.height
+   })
   end
   return effect
  end,
